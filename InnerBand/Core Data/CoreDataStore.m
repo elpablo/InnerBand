@@ -34,6 +34,7 @@ __strong static NSPersistentStoreCoordinator *gPersistentStoreCoordinator;
 
 - (void)createManagedObjectContext;
 - (void)initializeWithStoreLocation:(NSString *)location;
+- (id)initWithStoreLocation:(NSString *)location;
 
 @end
 
@@ -49,8 +50,22 @@ __strong static NSPersistentStoreCoordinator *gPersistentStoreCoordinator;
     return gMainStoreInstance;
 }
 
++ (CoreDataStore *)mainStoreWithLocation:(NSString *)location {
+    static dispatch_once_t once;
+    static id gMainStoreInstance;
+    dispatch_once(&once, ^{
+        gMainStoreInstance = [[self alloc] init];
+        [gMainStoreInstance initializeWithStoreLocation:location];
+    });
+    return gMainStoreInstance;
+}
+
 + (CoreDataStore *)createStore {
     return SAFE_ARC_AUTORELEASE([[self alloc] init]);
+}
+
++ (CoreDataStore *)createStoreWithLocation:(NSString *)location {
+    return SAFE_ARC_AUTORELEASE([[self alloc] initWithStoreLocation:location]);
 }
 
 - (void)initializeWithStoreLocation:(NSString *)location {
@@ -72,11 +87,21 @@ __strong static NSPersistentStoreCoordinator *gPersistentStoreCoordinator;
 }
 
 + (CoreDataStore *)createStoreWithContext:(NSManagedObjectContext *)context {
-    return SAFE_ARC_AUTORELEASE([[CoreDataStore alloc] initWithContext:context]);
+    return SAFE_ARC_AUTORELEASE([[self alloc] initWithContext:context]);
 }
 
 - (id)init {
 	if ((self = [super init])) {
+        [self initializeWithStoreLocation:kDefaultStoreLocation];
+		[self createManagedObjectContext];
+	}
+	
+	return self;
+}
+
+- (id)initWithStoreLocation:(NSString *)location {
+	if ((self = [super init])) {
+        [self initializeWithStoreLocation:location];
 		[self createManagedObjectContext];
 	}
 	

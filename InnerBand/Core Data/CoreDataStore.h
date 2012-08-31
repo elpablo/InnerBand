@@ -26,8 +26,14 @@
 
 @property (nonatomic, readonly) NSManagedObjectContext *context;
 
+/// Crarate a CoreDataStore and a sqlite DB into the <your app path>/Documents/CoreDataStore.sqlite
 + (CoreDataStore *)mainStore;
+/// Crarate a CoreDataStore and a DB file specified by the absolute path given as argument.
++ (CoreDataStore *)mainStoreWithLocation:(NSString *)location;
+/// Create an instance of the CoreDataStore.
 + (CoreDataStore *)createStore;
+/// Create an instance of the CoreDataStore with a given custom store location.
++ (CoreDataStore *)createStoreWithLocation:(NSString *)location;
 + (CoreDataStore *)createStoreWithContext:(NSManagedObjectContext *)context;
 
 - (id)initWithContext:(NSManagedObjectContext *)context;

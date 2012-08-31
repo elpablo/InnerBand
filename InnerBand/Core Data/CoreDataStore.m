@@ -22,36 +22,38 @@
 #import "Functions.h"
 #import "ARCMacros.h"
 
+#define kDefaultStoreLocation [DOCUMENTS_DIR() stringByAppendingPathComponent:@"CoreDataStore.sqlite"]
+
 // global Core Data objects
 __strong static NSManagedObjectModel *gManagedObjectModel;
 __strong static NSPersistentStoreCoordinator *gPersistentStoreCoordinator;
 
-// main thread singleton
-static CoreDataStore *gMainStoreInstance;
-
 @interface CoreDataStore ()
 
+@property (strong) NSString *storeLocation;
+
 - (void)createManagedObjectContext;
+- (void)initializeWithStoreLocation:(NSString *)location;
 
 @end
 
 @implementation CoreDataStore
 
 + (CoreDataStore *)mainStore {
-	@synchronized (self) {
-		if (!gMainStoreInstance) {
-			gMainStoreInstance = [[CoreDataStore alloc] init];
-		}
-	}
-	
-	return gMainStoreInstance;
+    static dispatch_once_t once;
+    static id gMainStoreInstance;
+    dispatch_once(&once, ^{
+        gMainStoreInstance = [[self alloc] init];
+        [gMainStoreInstance initializeWithStoreLocation:kDefaultStoreLocation];
+    });
+    return gMainStoreInstance;
 }
 
 + (CoreDataStore *)createStore {
-    return SAFE_ARC_AUTORELEASE([[CoreDataStore alloc] init]);
+    return SAFE_ARC_AUTORELEASE([[self alloc] init]);
 }
 
-+ (void)initialize {
+- (void)initializeWithStoreLocation:(NSString *)location {
 	NSError *error = nil;
 
 	// create the global managed object model
@@ -60,8 +62,8 @@ static CoreDataStore *gMainStoreInstance;
 	// create the global persistent store
     gPersistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:gManagedObjectModel];
 	
-	NSString *storeLocation = [DOCUMENTS_DIR() stringByAppendingPathComponent:@"CoreDataStore.sqlite"];
-	NSURL *storeURL = [NSURL fileURLWithPath:storeLocation];
+	self.storeLocation = location;
+	NSURL *storeURL = [NSURL fileURLWithPath:self.storeLocation];
 	
 	if (![gPersistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
 		NSLog(@"Error creating persistantStoreCoordinator: %@, %@", error, [error userInfo]);
@@ -113,8 +115,7 @@ static CoreDataStore *gMainStoreInstance;
     _managedObjectContext = nil;
     
 	// remove persistence file
-	NSString *storeLocation = [DOCUMENTS_DIR() stringByAppendingPathComponent:@"CoreDataStore.sqlite"];
-	NSURL *storeURL = [NSURL fileURLWithPath:storeLocation];
+	NSURL *storeURL = [NSURL fileURLWithPath:self.storeLocation];
 	
 	// remove
 	@try {
@@ -124,7 +125,7 @@ static CoreDataStore *gMainStoreInstance;
 	}
 	
 	// init again
-	[CoreDataStore initialize];
+	[self initializeWithStoreLocation:self.storeLocation];
 	[self createManagedObjectContext];
 }
 

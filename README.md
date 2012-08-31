@@ -109,10 +109,19 @@ For example, if you generated a CoreData class called Widget, you can now call
 way to go because it's compiler-checkable, but it does require that you generate
 the classes with the same name as the entities.
 	
-And now, it's also thread-safe!  Create a private CoreDataStore on your thread with
-[CoreDataStore createStore].  If you're on the main thread, you can access the
-singleton with [CoreDataStore mainStore].  Remember, your NSManagedObject classes
-cannot be passed between threads!
+And now, it's also thread-safe!
+Create a private CoreDataStore on your thread with
+[CoreDataStore createStore];
+If you're on the main thread, you can access the singleton with
+[CoreDataStore mainStore];
+Remember, your NSManagedObject classes cannot be passed between threads!
+
+Additions by elpablo ( https://github.com/elpablo )
+Now you can give a custom name/location where the DB is located and named
+by using these new API:
+[CoreDataStore createWithLocation:@"your/custom/location/database.db"];
+Same story for the main thread:
+[CoreDataStore mainStoreWithLocation:@"your/custom/location/database.db"];
 	
 ## Categories ##
 	

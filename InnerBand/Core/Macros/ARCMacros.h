@@ -44,6 +44,9 @@
 #endif
 
 #if __has_feature(objc_arc)
+    #define SAFE_ARC_BRIDGE(x) __bridge x
+    #define SAFE_ARC_BRIDGE_RETAIN(x) __bridge_retain x
+    #define SAFE_ARC_BRIDGE_RETAINED(x) __bridge_retained x
     #define SAFE_ARC_PROP_RETAIN strong
     #define SAFE_ARC_RETAIN(x) (x)
     #define SAFE_ARC_RELEASE(x)
@@ -54,6 +57,9 @@
     #define SAFE_ARC_AUTORELEASE_POOL_START() @autoreleasepool {
     #define SAFE_ARC_AUTORELEASE_POOL_END() }
 #else
+    #define SAFE_ARC_BRIDGE(x) x
+    #define SAFE_ARC_BRIDGE_RETAIN(x) x
+    #define SAFE_ARC_BRIDGE_RETAINED(x) x
     #define SAFE_ARC_PROP_RETAIN retain
     #define SAFE_ARC_RETAIN(x) ([(x) retain])
     #define SAFE_ARC_RELEASE(x) ([(x) release])

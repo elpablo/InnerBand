@@ -84,6 +84,17 @@
 	GHAssertEquals(2U, widgets.count, nil);
 }
 
+- (void)testCreationWithLocation {
+    NSString *customLocation = [DOCUMENTS_DIR() stringByAppendingPathComponent:@"CustomDataStore.db"];
+	CoreDataStore *store = [CoreDataStore createStoreWithLocation:customLocation];
+    
+    // Check that a DB file with the given custom name exists
+    BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:customLocation];
+    GHAssertTrue(exists, @"Filename doesn't exists!!");
+    
+    [store clearAllData];
+}
+
 - (void)testInstanceCreation {
 	NSArray *widgets;
     

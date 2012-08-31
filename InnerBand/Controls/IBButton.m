@@ -122,7 +122,7 @@
 		NSArray *colors = [NSArray arrayWithObjects:(id)highColor.CGColor, (id)baseColor.CGColor, nil];
 		CGFloat locations[2] = { 0.0, 0.6 };
 		
-		CGGradientRef gradient = CGGradientCreateWithColors(space, (__bridge CFArrayRef)colors, locations);
+		CGGradientRef gradient = CGGradientCreateWithColors(space, (SAFE_ARC_BRIDGE(CFArrayRef))colors, locations);
 		CGPoint start = CGPointMake(0, inset.origin.y);
 		CGPoint end = CGPointMake(0, inset.origin.y+inset.size.height);
 		CGContextDrawLinearGradient (context, gradient, start, end, 0);
@@ -147,7 +147,7 @@
 		NSArray *colors = [NSArray arrayWithObjects:(id)highColor.CGColor, (id)shineMinor.CGColor, nil];
 		CGFloat locations[2] = { 0.0, 1.0 };
 		
-		CGGradientRef gradient = CGGradientCreateWithColors(space, (__bridge CFArrayRef)colors, locations);
+		CGGradientRef gradient = CGGradientCreateWithColors(space, (SAFE_ARC_BRIDGE(CFArrayRef))colors, locations);
 		CGPoint start = CGPointMake(0, inset.origin.y);
 		CGPoint end = CGPointMake(0, inset.origin.y+(inset.size.height/2));
 		CGContextDrawLinearGradient (context, gradient, start, end, 0);

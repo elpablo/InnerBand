@@ -67,7 +67,7 @@
     CGFloat H = 0;
     
     // Create the framesetter with the attributed string.
-    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString( (__bridge CFMutableAttributedStringRef) _attrStr); 
+    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString( (SAFE_ARC_BRIDGE(CFMutableAttributedStringRef)) _attrStr);
     
     CGRect box = CGRectMake(0,0, self.bounds.size.width, CGFLOAT_MAX);
     
@@ -112,7 +112,7 @@
     
 	if (_attrStr) {
 		// create the frame
-		CTFramesetterRef frameSetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)_attrStr);
+		CTFramesetterRef frameSetter = CTFramesetterCreateWithAttributedString((SAFE_ARC_BRIDGE(CFAttributedStringRef))_attrStr);
 		CTFrameRef frame = CTFramesetterCreateFrame(frameSetter, CFRangeMake(0, 0), textPath.CGPath, NULL);
         
 		if (frame) {
@@ -255,8 +255,8 @@
     
 	
     if (font) {
-        CTFontRef globalFont = CTFontCreateWithName((__bridge CFStringRef)font.fontName, font.pointSize, nil);
-        [attrString addAttribute:(NSString *)(kCTFontAttributeName) value:(__bridge id)globalFont range:NSMakeRange(0, str.length)];
+        CTFontRef globalFont = CTFontCreateWithName((SAFE_ARC_BRIDGE(CFStringRef))font.fontName, font.pointSize, nil);
+        [attrString addAttribute:(NSString *)(kCTFontAttributeName) value:(SAFE_ARC_BRIDGE(id))globalFont range:NSMakeRange(0, str.length)];
         CFRelease(globalFont);
     }
     
@@ -265,8 +265,8 @@
 	}
     
 	for (NSValue *iValue in _italicRanges) {
-		CTFontRef iFont = CTFontCreateWithName((__bridge CFStringRef)([UIFont italicSystemFontOfSize:font.pointSize].fontName), font.pointSize, nil);
-		[attrString addAttribute:(NSString *)(kCTFontAttributeName) value:(__bridge id)iFont range:iValue.rangeValue];
+		CTFontRef iFont = CTFontCreateWithName((SAFE_ARC_BRIDGE(CFStringRef))([UIFont italicSystemFontOfSize:font.pointSize].fontName), font.pointSize, nil);
+		[attrString addAttribute:(NSString *)(kCTFontAttributeName) value:(SAFE_ARC_BRIDGE(id))iFont range:iValue.rangeValue];
         CFRelease(iFont);
 	}
     
@@ -307,12 +307,12 @@
             
             if (!IS_EMPTY_STRING(strFontColor)) {
                 UIColor *iFontColor = [UIColor colorWithHexString:strFontColor];
-                [attrString addAttribute:(NSString *)kCTForegroundColorAttributeName value:(__bridge id)iFontColor.CGColor range:iValue.rangeValue];
+                [attrString addAttribute:(NSString *)kCTForegroundColorAttributeName value:(SAFE_ARC_BRIDGE(id))iFontColor.CGColor range:iValue.rangeValue];
             }
         }
 
-		CTFontRef iFont = CTFontCreateWithName((__bridge CFStringRef)iFontName, font.pointSize, nil);
-		[attrString addAttribute:(NSString *)(kCTFontAttributeName) value:(__bridge id)iFont range:iValue.rangeValue];
+		CTFontRef iFont = CTFontCreateWithName((SAFE_ARC_BRIDGE(CFStringRef))iFontName, font.pointSize, nil);
+		[attrString addAttribute:(NSString *)(kCTFontAttributeName) value:(SAFE_ARC_BRIDGE(id))iFont range:iValue.rangeValue];
         CFRelease(iFont);
 	}
 	
